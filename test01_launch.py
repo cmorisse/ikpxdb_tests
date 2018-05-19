@@ -14,10 +14,10 @@ _logger.addHandler(logging.StreamHandler())
 _logger.setLevel(logging.INFO)
 
 
-PYTHON_EXEC = "ikpdb/tests/py27tests/bin/python"
+PYTHON_EXEC = "py27tests/bin/python"
 TESTED_IKPDB_HOST = '127.0.0.1'
 TESTED_IKPDB_PORT = 15999
-DEBUGGED_PROGRAM = "ikpdb/tests/debugged_programs/test01_launch.py"
+DEBUGGED_PROGRAM = "debugged_programs/test01_launch.py"
 
 class TestCase01Launch(unittest.TestCase):
     

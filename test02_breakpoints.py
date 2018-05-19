@@ -14,10 +14,10 @@ _logger.addHandler(logging.StreamHandler())
 _logger.setLevel(logging.INFO)
 
 
-PYTHON_EXEC = "ikpdb/tests/py27tests/bin/python"
+PYTHON_EXEC = "py27tests/bin/python"
 TESTED_IKPDB_HOST = '127.0.0.1'
 TESTED_IKPDB_PORT = 15999
-DEBUGGED_PROGRAM = "ikpdb/tests/debugged_programs/test02_breakpoints.py"
+DEBUGGED_PROGRAM = "debugged_programs/test02_breakpoints.py"
 
 class TestCase02Breakpoints(unittest.TestCase):
     
@@ -55,7 +55,7 @@ class TestCase02Breakpoints(unittest.TestCase):
         
         # set a breakpoint and launch
         msg_id = self.ikpdb.send('setBreakpoint',
-                                 file_name='ikpdb/tests/debugged_programs/test02_breakpoints.py',
+                                 file_name='debugged_programs/test02_breakpoints.py',
                                  line_number=5,
                                  enabled=True)
         i_msg = self.ikpdb.receive()
@@ -72,7 +72,7 @@ class TestCase02Breakpoints(unittest.TestCase):
         self.assertEqual(i_msg['exception'], None, "Unexpected exception raised.")
         top_frame = i_msg['frames'][0]
         self.assertEqual(top_frame['file_path'], 
-                         'ikpdb/tests/debugged_programs/test02_breakpoints.py', 
+                         'debugged_programs/test02_breakpoints.py', 
                          "programBreak on unexpected file.")
         self.assertEqual(top_frame['line_number'], 5, "programBreak on unexpected line number.")
 
@@ -80,7 +80,7 @@ class TestCase02Breakpoints(unittest.TestCase):
     def test_02_getBreakpoints(self):
         """Launch debugger, run program and wait termination"""
 
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=5)
 
         msg_id = self.ikpdb.send('getBreakpoints')
@@ -92,7 +92,7 @@ class TestCase02Breakpoints(unittest.TestCase):
 
     def test_03_changeBreakpointState(self):
         """Test disable a breakpoint and set a condition"""
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=5)
 
         msg_id = self.ikpdb.send('changeBreakpointState',
@@ -124,14 +124,14 @@ class TestCase02Breakpoints(unittest.TestCase):
 
     def test_04_conditionalBreakpoint(self):
         """Test that conditional breakpoints and enabled flag are correctly managed."""
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=5,
                                  enabled=False)
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=6,
                                  condition='a_var==50',
                                  enabled=False)
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=8,
                                  condition='a_var==50',
                                  enabled=True)
@@ -143,7 +143,7 @@ class TestCase02Breakpoints(unittest.TestCase):
         self.assertEqual(i_msg['exception'], None, "Unexpected exception raised.")
         top_frame = i_msg['frames'][0]
         self.assertEqual(top_frame['file_path'], 
-                         'ikpdb/tests/debugged_programs/test02_breakpoints.py', 
+                         'debugged_programs/test02_breakpoints.py', 
                          "programBreak on unexpected file.")
         self.assertEqual(top_frame['line_number'], 8, "programBreak on unexpected line number.")
         a_var_dump = filter(lambda e:e['name']=='a_var', top_frame['f_locals'])
@@ -154,14 +154,14 @@ class TestCase02Breakpoints(unittest.TestCase):
 
     def test_05_clearBreakpoint(self):
         """Test breakpoints deletion."""
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=5,
                                  enabled=False)
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=6,
                                  condition='a_var==1',
                                  enabled=True)
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=7,
                                  condition='a_var==50',
                                  enabled=True)
@@ -188,7 +188,7 @@ class TestCase02Breakpoints(unittest.TestCase):
         self.assertEqual(i_msg['exception'], None, "Unexpected exception raised.")
         top_frame = i_msg['frames'][0]
         self.assertEqual(top_frame['file_path'], 
-                         'ikpdb/tests/debugged_programs/test02_breakpoints.py', 
+                         'debugged_programs/test02_breakpoints.py', 
                          "programBreak on unexpected file.")
         self.assertEqual(top_frame['line_number'], 6, "programBreak on unexpected line number.")
 
@@ -207,14 +207,14 @@ class TestCase02Breakpoints(unittest.TestCase):
         resume
         check that last breakpoint triggers
         """
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=5,
                                  enabled=True)
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=6,
                                  condition='a_var==1',
                                  enabled=True)
-        self.ikpdb.set_breakpoint('ikpdb/tests/debugged_programs/test02_breakpoints.py',
+        self.ikpdb.set_breakpoint('debugged_programs/test02_breakpoints.py',
                                  line_number=8,
                                  condition='a_var==60',
                                  enabled=True)
@@ -227,7 +227,7 @@ class TestCase02Breakpoints(unittest.TestCase):
         self.assertEqual(i_msg['exception'], None, "Unexpected exception raised.")
         top_frame = i_msg['frames'][0]
         self.assertEqual(top_frame['file_path'], 
-                         'ikpdb/tests/debugged_programs/test02_breakpoints.py', 
+                         'debugged_programs/test02_breakpoints.py', 
                          "programBreak on unexpected file.")
         self.assertEqual(top_frame['line_number'], 5, "programBreak on unexpected line number.")
         
@@ -263,7 +263,7 @@ class TestCase02Breakpoints(unittest.TestCase):
         self.assertEqual(i_msg['exception'], None, "Unexpected exception raised.")
         top_frame = i_msg['frames'][0]
         self.assertEqual(top_frame['file_path'], 
-                         'ikpdb/tests/debugged_programs/test02_breakpoints.py', 
+                         'debugged_programs/test02_breakpoints.py', 
                          "programBreak on unexpected file.")
         self.assertEqual(top_frame['line_number'], 8, "programBreak on unexpected line number.")
 
