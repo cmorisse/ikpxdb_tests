@@ -50,7 +50,7 @@ class TestCase03Suspend(unittest.TestCase):
             time.sleep(1)
 
     def test_01_suspend(self):
-        """Launch a debugged program and suspend."""
+        """Launch a debugged program and suspend (github #7)."""
         time.sleep(0.2)  # allows debugger to start
         self.ikpdb.run_script()
 

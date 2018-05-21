@@ -6,6 +6,7 @@
 # plumbing
 .idea/
 py2*/
+py36*/
 venv*/
 .c9/
 .vscode/

@@ -112,8 +112,6 @@ class TestCase01Launch(unittest.TestCase):
         self.assertEqual(i_msg['command'], "programEnd", "programEnd message not received.")
         self.assertEqual(i_msg['result']['exit_code'], None, "Unexpected exit code.")
 
-        # TODO: Why do we need to kill in tests while behaviour is ok when running
-        dp.kill()  
         # Allow PORT to be recycled
         time.sleep(1) 
 
