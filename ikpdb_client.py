@@ -52,10 +52,14 @@ class IKPdbClient(object):
     def log_sent(self, msg):
         _logger.debug("Sent %s bytes >>>%s<<<", len(msg), msg)        
         
-    def receive(self):
+    def receive(self, timeout=None):
         """
         """
-        
+        if timeout:
+            self._socket.settimeout(timeout)
+        else:
+            self._socket.settimeout(None)
+
         skip_recv_switch = True if self._received_data else False
         
         while True:

@@ -110,9 +110,7 @@ class TestCase01Launch(unittest.TestCase):
 
         i_msg = ikpdb.receive()
         self.assertEqual(i_msg['command'], "programEnd", "programEnd message not received.")
-        self.assertEqual(i_msg['result']['exit_code'], None, "Unexpected exit code.")
+        self.assertEqual(i_msg['result']['exit_code'], 42, "Unexpected exit code.")
 
-        # Allow PORT to be recycled
-        time.sleep(1) 
 
 
