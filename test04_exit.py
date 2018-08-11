@@ -14,7 +14,6 @@ _logger.addHandler(logging.StreamHandler())
 _logger.setLevel(logging.INFO)
 
 
-PYTHON_EXEC = "py27tests/bin/python"
 TESTED_IKPDB_HOST = '127.0.0.1'
 TESTED_IKPDB_PORT = 15999
 DEBUGGED_PROGRAM = "debugged_programs/test04_exit.py"
@@ -30,6 +29,12 @@ class TestCase04Exit(unittest.TestCase):
         pass
     
     def setUp(self):
+        TESTED_DEBUGGER = os.environ.get('TESTED_DEBUGGER', '')
+        if TESTED_DEBUGGER == 'ikp3db':
+            PYTHON_EXEC = "py3xtests/bin/python"
+        else:
+            PYTHON_EXEC = "py27tests/bin/python"
+        
         if self._testMethodName == 'test_01_exit':
             DEBUGGED_PROGRAM = "debugged_programs/test04_exit.py"
         if self._testMethodName == 'test_02_autoexit':
@@ -37,7 +42,7 @@ class TestCase04Exit(unittest.TestCase):
 
         cmd_line = [
             PYTHON_EXEC, 
-            "-m", "ikpdb", 
+            "-m", TESTED_DEBUGGER, 
             #"--ikpdb-log=9NB",
             #"--ikpdb-log=9",
             "--ikpdb-port=%s" % TESTED_IKPDB_PORT,
@@ -49,10 +54,14 @@ class TestCase04Exit(unittest.TestCase):
         time.sleep(0.6)  # allows debugger to start
         self.ikpdb = IKPdbClient(TESTED_IKPDB_HOST, TESTED_IKPDB_PORT)
 
-    def no_tearDown(self):
+    def tearDown(self):
         if self.dp:
-            self.dp.kill()
-            time.sleep(1)
+            # to allow tests to support handling of autoexit until fixed in 
+            # both versions
+            proc_poll = self.dp.poll()
+            if proc_poll is None: 
+                self.dp.kill()
+                time.sleep(1)
 
     def test_01_exit(self):
         """Launch a debugged program and check IKpdb exit when sys.exit() is called."""

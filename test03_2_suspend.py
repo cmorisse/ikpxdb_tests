@@ -14,7 +14,6 @@ _logger.addHandler(logging.StreamHandler())
 _logger.setLevel(logging.INFO)
 
 
-PYTHON_EXEC = "py27tests/bin/python"
 TESTED_IKPDB_HOST = '127.0.0.1'
 TESTED_IKPDB_PORT = 15999
 DEBUGGED_PROGRAM = "debugged_programs/test03_2_suspend.py"
@@ -30,9 +29,15 @@ class TestCase03Suspend(unittest.TestCase):
         pass
     
     def setUp(self):
+        TESTED_DEBUGGER = os.environ.get('TESTED_DEBUGGER', '')
+        if TESTED_DEBUGGER == 'ikp3db':
+            PYTHON_EXEC = "py3xtests/bin/python"
+        else:
+            PYTHON_EXEC = "py27tests/bin/python"
+        
         cmd_line = [
             PYTHON_EXEC, 
-            "-m", "ikpdb", 
+            "-m", TESTED_DEBUGGER, 
             #"--ikpdb-log=9NB",
             #"--ikpdb-log=9",
             "--ikpdb-port=%s" % TESTED_IKPDB_PORT,

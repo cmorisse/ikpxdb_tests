@@ -13,8 +13,6 @@ _logger = logging.getLogger(__file__)
 _logger.addHandler(logging.StreamHandler())
 _logger.setLevel(logging.INFO)
 
-
-PYTHON_EXEC = "py27tests/bin/python"
 TESTED_IKPDB_HOST = '127.0.0.1'
 TESTED_IKPDB_PORT = 15999
 DEBUGGED_PROGRAM = "debugged_programs/test01_launch.py"
@@ -28,15 +26,18 @@ class TestCase01Launch(unittest.TestCase):
         #p = subprocess.Popen(["python", "-m", "ikpdb", "tests/debugged_programs/test01_connect.py" ])
         #print(p)
         pass
-    
-    
+
     def setUp(self):
-        pass
-        #print("setUp")
+        
+        self.TESTED_DEBUGGER = os.environ.get('TESTED_DEBUGGER', '')
+        if self.TESTED_DEBUGGER == 'ikp3db':
+            self.PYTHON_EXEC = "py3xtests/bin/python"
+        else:
+            self.PYTHON_EXEC = "py27tests/bin/python"
 
     def tearDown(self):
-        pass
         #print("tearDown")
+        pass
 
     def test_01_launch_file_not_exists(self):
         """ Launch a non existent debugged program and get an error"""
@@ -44,9 +45,9 @@ class TestCase01Launch(unittest.TestCase):
         # connects to it
         # get the welcome message
         cmd_line = [
-            PYTHON_EXEC, 
+            self.PYTHON_EXEC, 
             "-m", 
-            "ikpdb", 
+            self.TESTED_DEBUGGER, 
             "ikpdb/tests/debugged_programs/wwwwwwwwwwwwwww.py"
         ]
         res = subprocess.Popen(cmd_line,
@@ -60,8 +61,8 @@ class TestCase01Launch(unittest.TestCase):
     def test_02_connect(self):
         """Launch a debugged program and connect to debugger."""
         cmd_line = [
-            PYTHON_EXEC, 
-            "-m", "ikpdb", 
+            self.PYTHON_EXEC, 
+            "-m", self.TESTED_DEBUGGER, 
             #"--ikpdb-log=9N",
             "--ikpdb-port=%s" % TESTED_IKPDB_PORT,
             #"--ikpdb-welcome",
@@ -85,8 +86,8 @@ class TestCase01Launch(unittest.TestCase):
         # We need to change port to avoid addr et port used errors
         TESTED_IKPDB_PORT = 16000  
         cmd_line = [
-            PYTHON_EXEC, 
-            "-m", "ikpdb", 
+            self.PYTHON_EXEC, 
+            "-m", self.TESTED_DEBUGGER, 
             #"--ikpdb-log=9N",
             "--ikpdb-port=%s" % TESTED_IKPDB_PORT,
             #"--ikpdb-welcome",

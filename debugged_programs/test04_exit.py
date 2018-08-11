@@ -4,7 +4,7 @@ import sys
 
 def looping_function():
     loop = 0
-    while loop < 7:
+    while loop < 10:
         
         print("loop=%s, " % loop, end='')
         time.sleep(0.2)

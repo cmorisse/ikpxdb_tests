@@ -1,9 +1,8 @@
 # coding: utf-8
-
 import socket
 import logging
 import json
-import ikpdb
+
 
 _logger = logging.getLogger(__file__)
 _logger.addHandler(logging.StreamHandler())
@@ -35,7 +34,8 @@ class IKPdbClient(object):
     
         if not debug:
             obj = self.receive()
-            assert obj['info_messages'][0] == u"Welcome to", "'start'/'Welcome to...' message not received"
+            assert obj['info_messages'][0] == u"Welcome to", ("'start'/'Welcome"
+                                               "to...' message not received")
     
     def encode(self, obj):
         json_obj = json.dumps(obj)
@@ -135,7 +135,6 @@ class IKPdbClient(object):
     def resume(self):
         msg_id = self.send('resume')
         reply_msg = self.receive()
-        print(reply_msg['_id'], msg_id)
         assert reply_msg['_id'] == msg_id, "Unexpected reply message to resume command."
         assert reply_msg['commandExecStatus'] == "ok", "IKPdb failed to resume debugged program."
         assert reply_msg['result'].get('executionStatus') == 'running', "IKPdb failed to resume debugged program."

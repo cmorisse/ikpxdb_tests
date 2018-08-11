@@ -1,8 +1,10 @@
+# coding: utf8
+
 import time
 
 def processing():
     a_var = 1
-    b_var = "a_string"
+    b_var = "a_string"  # §é£|
     print("Line 3")
     a_var = 50
     print("line 6")

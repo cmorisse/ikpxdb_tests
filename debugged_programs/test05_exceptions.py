@@ -22,13 +22,13 @@ def sub():
     print(">>> %s: %s" % (type(cs), cs))
     if sys.version_info.major == 2:
         csu = unicode(cs, "utf_8")
-        print(">>> %s: %s" % (type(csu), csu))
+        print(">>> type(csu)=%s" % type(csu))
     else:
         csu = cs
     
-    if True:
+    if sys.argv[1] in ('test_01_unmanaged_exceptions', 
+                       'test_02_resume_after_exception'):
         raise Exception(csu)
-    #raise Exception(cs)
 
 
 if __name__ == '__main__':

@@ -7,6 +7,8 @@
 .idea/
 py2*/
 py36*/
+py3xtests/
+py27tests/
 venv*/
 .c9/
 .vscode/
