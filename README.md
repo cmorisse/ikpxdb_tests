@@ -1,9 +1,10 @@
-        ______ __ ____      ____       __            __      
-       /  _/ //_// __ \____/ / /_     / /____  _____/ /______
-       / // ,<  / /_/ / __  / __ \   / __/ _ \/ ___/ __/ ___/
-     _/ // /| |/ ____/ /_/ / /_/ /  / /_/  __(__  ) /_(__  ) 
-    /___/_/ |_/_/    \__,_/_.___/   \__/\___/____/\__/____/  
-    =======================================================
+
+        ______ __ ____           ____       __            __      
+       /  _/ //_// __ \_  ______/ / /_     / /____  _____/ /______
+       / // ,<  / /_/ / |/_/ __  / __ \   / __/ _ \/ ___/ __/ ___/
+     _/ // /| |/ ____/>  </ /_/ / /_/ /  / /_/  __(__  ) /_(__  ) 
+    /___/_/ |_/_/   /_/|_|\__,_/_.___/   \__/\___/____/\__/____/  
+    ===========================================================
    
 
 License
@@ -16,33 +17,29 @@ All files in this repo are Licensed under MIT.
  ============
  
  
-    git clone ...
+    git clone git@github.com:cmorisse/ikpxdb_tests.git
     cd ikpxdb_tests
     
-    # in the ikpdxdb_tests
+    # in the ikpdxdb_tests directory
     virtualenv --python=python2 py27tests
-    source py27tests/bin/activate
     # Choose one among these
-    pip install ikpdb
-    pip install -e ../ikpdb
-    deactivate
-    
+    py27tests/bin/pip install ikpdb
+    py27tests/bin/pip install -e ../ikpdb
+
     # warning python 3.6 minimum
     virtualenv --python=python3 py3xtests
-    source py3xtests/bin/activate
     # Choose one among these
-    pip install ikp3db
-    pip install -e ../ikp3db
-    deactivate
-    
+    py3xtests/bin/pip install ikp3db
+    py3xtests/bin/pip install -e ../ikp3db
     
 Launch tests
 ============
 
-    cd ikpxdb_tests
-    python run_tests __test_ikpdb  # for ikpdb 
+    # in the ikpdxdb_tests directory
+    py27tests/bin/python 
+    py27tests/bin/python run_tests.py __test_ikpdb  # for ikpdb 
     # or 
-    python run_tests __test_ikp3db
+    py27tests/bin/python run_tests.py __test_ikp3db
 
 
 Development
