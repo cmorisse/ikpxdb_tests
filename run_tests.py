@@ -2,17 +2,16 @@ import sys
 import os
 import click
 
-if True:
-    from test01_launch import *
-    from test02_breakpoints import *
-    from test03_suspend import *
-    from test03_2_suspend import *
-    from test04_exit import *
-    from test05_exceptions import *
+from test01_launch import *
+from test02_breakpoints import *
+from test03_suspend import *
+from test03_2_suspend import *
+from test04_exit import *
+from test05_exceptions import *
 from test06_set_trace import *
 
 
-def remove_options():
+def remove_launcher_options():
     sys.argv[:] = filter(lambda e: not e.startswith('--ikpxdb'), sys.argv)
 
 
@@ -29,7 +28,13 @@ def remove_options():
 def launch_tests(ikpxdb, ikpxdb_virtualenv):
     os.environ['TESTED_DEBUGGER'] = ikpxdb
     os.environ['TESTED_PYTHON_VIRTUALENV'] = ikpxdb_virtualenv
-    remove_options()
+    remove_launcher_options()
+    
+    print("\n")
+    print("Tested debugger: '%s'" % ikpxdb)
+    print("Tested python virtualenv: '%s'" % ikpxdb_virtualenv)
+    print("\n\n")
+    
     unittest.main(verbosity=2)
 
 
