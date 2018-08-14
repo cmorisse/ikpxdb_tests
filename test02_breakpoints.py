@@ -13,11 +13,6 @@ _logger = logging.getLogger(__file__)
 _logger.addHandler(logging.StreamHandler())
 _logger.setLevel(logging.INFO)
 
-TESTED_DEBUGGER = os.environ.get('TESTED_DEBUGGER', '')
-if os.environ.get('TESTED_DEBUGGER', '') == 'ikp3db':
-    PYTHON_EXEC = "py36tests/bin/python"
-else:
-    PYTHON_EXEC = "py27tests/bin/python"
 
 TESTED_IKPDB_HOST = '127.0.0.1'
 TESTED_IKPDB_PORT = 15999
@@ -35,10 +30,7 @@ class TestCase02Breakpoints(unittest.TestCase):
     
     def setUp(self):
         TESTED_DEBUGGER = os.environ.get('TESTED_DEBUGGER', '')
-        if TESTED_DEBUGGER == 'ikp3db':
-            PYTHON_EXEC = "py3xtests/bin/python"
-        else:
-            PYTHON_EXEC = "py27tests/bin/python"
+        PYTHON_EXEC = "%s/bin/python" % os.environ.get('TESTED_PYTHON_VIRTUALENV', '')
         
         cmd_line = [
             PYTHON_EXEC, 

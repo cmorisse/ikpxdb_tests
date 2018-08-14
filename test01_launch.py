@@ -28,12 +28,8 @@ class TestCase01Launch(unittest.TestCase):
         pass
 
     def setUp(self):
-        
         self.TESTED_DEBUGGER = os.environ.get('TESTED_DEBUGGER', '')
-        if self.TESTED_DEBUGGER == 'ikp3db':
-            self.PYTHON_EXEC = "py3xtests/bin/python"
-        else:
-            self.PYTHON_EXEC = "py27tests/bin/python"
+        self.PYTHON_EXEC = "%s/bin/python" % os.environ.get('TESTED_PYTHON_VIRTUALENV', '')
 
     def tearDown(self):
         #print("tearDown")

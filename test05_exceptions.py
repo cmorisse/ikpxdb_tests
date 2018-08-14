@@ -31,10 +31,7 @@ class TestCase05Exceptions(unittest.TestCase):
     
     def setUp(self):
         TESTED_DEBUGGER = os.environ.get('TESTED_DEBUGGER', '')
-        if TESTED_DEBUGGER == 'ikp3db':
-            PYTHON_EXEC = "py3xtests/bin/python"
-        else:
-            PYTHON_EXEC = "py27tests/bin/python"
+        PYTHON_EXEC = "%s/bin/python" % os.environ.get('TESTED_PYTHON_VIRTUALENV', '')
 
         cmd_line = [
             PYTHON_EXEC, 

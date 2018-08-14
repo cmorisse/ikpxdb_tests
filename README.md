@@ -21,25 +21,24 @@ All files in this repo are Licensed under MIT.
     cd ikpxdb_tests
     
     # in the ikpdxdb_tests directory
-    virtualenv --python=python2 py27tests
+    virtualenv --python=python2 py27venv
     # Choose one among these
-    py27tests/bin/pip install ikpdb
-    py27tests/bin/pip install -e ../ikpdb
+    py27venv/bin/pip install click
+    py27venv/bin/pip install ikpdb
+    py27venv/bin/pip install -e ../ikpdb
 
     # warning python 3.6 minimum
-    virtualenv --python=python3 py3xtests
+    virtualenv --python=python3 py36venv
     # Choose one among these
-    py3xtests/bin/pip install ikp3db
-    py3xtests/bin/pip install -e ../ikp3db
+    py36venv/bin/pip install ikp3db
+    py36venv/bin/pip install -e ../ikp3db
     
 Launch tests
 ============
 
     # in the ikpdxdb_tests directory
     py27tests/bin/python 
-    py27tests/bin/python run_tests.py __test_ikpdb  # for ikpdb 
-    # or 
-    py27tests/bin/python run_tests.py __test_ikp3db
+    py27tests/bin/python run_tests.py --help
 
 
 Development

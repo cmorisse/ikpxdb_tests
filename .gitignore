@@ -7,6 +7,7 @@
 .idea/
 py2*/
 py36*/
+py37*/
 py3xtests/
 py27tests/
 venv*/

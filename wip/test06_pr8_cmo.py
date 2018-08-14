@@ -11,13 +11,12 @@ def random_string(length):
 a = []
 
 while True:
-    s = random_string(45)
+    #s = random_string(45)
+    s = input()
     
     if s != "":
         for x in list(s):
-            print(x)
-            a.append(ord(x))  
-        break   
+            a.append(ord(x))
     else:
         break
 
