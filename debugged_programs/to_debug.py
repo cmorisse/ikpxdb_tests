@@ -9,7 +9,10 @@ import sys
 import os
 import time
 import threading
-import ikpdb
+try:
+    import ikpdb
+except:
+    import ikp3db as ikpdb
 
 TEST_MULTI_THREADING = False
 TEST_EXCEPTION_PROPAGATION = True
@@ -33,7 +36,7 @@ class Worker(object):
     def run(self, n):
         work_count = n
         while self._running and n > 0:
-            print "Worker: Doing iteration: %s" % (work_count - n)
+            print("Worker: Doing iteration: %s" % (work_count - n))
             if n == 3:
                 pass  # ikpdb.set_trace()
             n -= 1
@@ -50,7 +53,7 @@ class BigBear:
         self._name = name
         
     def grumble(self):
-        print "Roaaarrrrrrr"
+        print("Roaaarrrrrrr")
 
 def sub_function():
     return True
@@ -59,12 +62,12 @@ def the_function(p_nb_seconds):
     a_var = 18.3
     the_function_local_list = [1, 2, 3, 'cyril']
     a_beast = BigBear()
-    print "ga=%s" % ga
+    print("ga=%s" % ga)
     
-    print "Hello World"
-    print "Ceci est la ligne avec le point d'arret"
+    print("Hello World")
+    print("Ceci est la ligne avec le point d'arret")
     for loop_idx in range(p_nb_seconds):
-        print "hello @ %s seconds" % loop_idx
+        print("hello @ %s seconds" % loop_idx)
         time.sleep(1)
         if loop_idx == 6:
             if TEST_SET_TRACE:
@@ -84,15 +87,15 @@ def raiser():
     except Exception as e:
         try:
             ikpdb.post_mortem(exc_info=sys.exc_info())
-            print "Resuming execution after sending exception to debugger"
+            print("Resuming execution after sending exception to debugger")
         except:
-            print "IKPdb port_mortem() skipped since IKPdb is not available"
+            print("IKPdb port_mortem() skipped since IKPdb is not available")
 
 if __name__=='__main__':
     b = 0
     main_bear = BigBear("Cyril")
-    print "Type of main_bear=%s" % type(main_bear)
-    print "sys.argv=%s" % sys.argv
+    print("Type of main_bear=%s" % type(main_bear))
+    print("sys.argv=%s" % sys.argv)
     
     if TEST_SYS_EXIT:
         sys.exit(TEST_SYS_EXIT)
@@ -112,12 +115,12 @@ if __name__=='__main__':
     
     counter = 0
     if TEST_SUSPEND:
-        print "Suspend test begin..."
+        print("Suspend test begin...")
         t0 = time.clock()
         while counter < 10000000:
             counter +=1
         t1 = time.clock()
-        print "duration = %s" % (t1-t0)
+        print("duration = %s" % (t1-t0))
         
         
     if TEST_MULTI_THREADING:
@@ -126,6 +129,6 @@ if __name__=='__main__':
     
     
     if TEST_POSTMORTEM:
-        print 5 / b
+        print(5 / b)
     
-    print "finished"
+    print("finished")
