@@ -1,3 +1,6 @@
+import time
 x = 50
 while True:
-    pass
+    time.sleep(0.5)
+    print(">.<")
+    x += 1

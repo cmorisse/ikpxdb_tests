@@ -69,6 +69,11 @@ class IKPdbClient(object):
                     skip_recv_switch = False 
                 else:
                     data = self._socket.recv(self.SOCKET_BUFFER_SIZE)
+
+            except socket.timeout:
+                _logger.debug("socket.timeout waiting for ikpdb message.")
+                raise
+
             except socket.error as socket_err:
                 return {'command': '_InternalQuit', 
                         'args':{'socket_error_number': socket_err.errno,
@@ -143,7 +148,6 @@ class IKPdbClient(object):
     def suspend(self):
         msg_id = self.send('suspend')
         reply_msg = self.receive()
-        print(reply_msg['_id'], msg_id)
         assert reply_msg['_id'] == msg_id, "Unexpected reply message to 'suspend' command."
         assert reply_msg['commandExecStatus'] == "ok", "IKPdb failed to resume debugged program."
         assert reply_msg['result'].get('executionStatus') == 'running', "IKPdb failed to resume debugged program."
