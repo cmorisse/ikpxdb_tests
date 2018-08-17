@@ -192,3 +192,19 @@ class IKPdbClient(object):
         if reply_msg['commandExecStatus'] != "ok":
             raise IKPdbClientError("'clearBreakpoint' command failed.")
         return reply_msg
+
+    def evaluate(self, frame_id, expression, global_context=False, disableBreak=True):
+        kw_args = {
+            'frame': frame_id,
+            'expression': expression,
+            'global': global_context,
+            'disableBreak': disableBreak
+        }
+        msg_id = self.send('evaluate',
+                           **kw_args)
+        reply_msg = self.receive()
+        if reply_msg['_id'] != msg_id:
+            raise IKPdbClientError("Unexpected reply message to 'evaluate'.")
+        if reply_msg['commandExecStatus'] != "ok":
+            raise IKPdbClientError("'evaluate' command failed.")
+        return reply_msg

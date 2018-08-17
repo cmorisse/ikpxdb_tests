@@ -14,12 +14,15 @@ try:
 except:
     import ikp3db as ikpdb
 
-TEST_MULTI_THREADING = False
-TEST_EXCEPTION_PROPAGATION = True
+
+PYTHON_VERSION = sys.version_info[:2]
+TEST_MULTI_THREADING = True
+TEST_EXCEPTION_PROPAGATION = False
 TEST_POSTMORTEM = True
 TEST_SYS_EXIT = 0
 TEST_STEPPING = False
 TEST_SUSPEND = True
+
 
 # Note that ikpdb.set_trace() will reset/mess breakpoints set using GUI
 TEST_SET_TRACE = False  
@@ -34,13 +37,18 @@ class Worker(object):
         self._running = False
         
     def run(self, n):
-        work_count = n
-        while self._running and n > 0:
-            print("Worker: Doing iteration: %s" % (work_count - n))
-            if n == 3:
-                pass  # ikpdb.set_trace()
-            n -= 1
-            time.sleep(2)
+        work_count = 1
+        while self._running and work_count <= n:
+            print("Thread %s: Doing iteration: %s" % (threading.currentThread().getName(), work_count))
+            if work_count == 3:
+                if PYTHON_VERSION >= (3, 7):
+                    #breakpoint()
+                    pass   
+                else:
+                    print("breakpoint")
+                    #ikpdb.set_trace()
+            work_count += 1
+            time.sleep(1)
 
 ga = 5
 gb ="coucou"
@@ -105,8 +113,10 @@ if __name__=='__main__':
     
     if TEST_MULTI_THREADING:
         w = Worker()
-        t = threading.Thread(target=w.run, args=(5,))
+        t = threading.Thread(target=w.run, args=(250,))
+        thread_2 = threading.Thread(target=w.run, args=(250,))
         t.start()
+        thread_2.start()
 
     EXTRA_TIME = 0
     
@@ -117,8 +127,10 @@ if __name__=='__main__':
     if TEST_SUSPEND:
         print("Suspend test begin...")
         t0 = time.clock()
-        while counter < 10000000:
+        while counter < 500:  # 250s , 4 minutes
             counter +=1
+            time.sleep(0.5)
+            print(">-<")
         t1 = time.clock()
         print("duration = %s" % (t1-t0))
         
