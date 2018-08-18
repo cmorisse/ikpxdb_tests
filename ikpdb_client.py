@@ -208,3 +208,20 @@ class IKPdbClient(object):
         if reply_msg['commandExecStatus'] != "ok":
             raise IKPdbClientError("'evaluate' command failed.")
         return reply_msg
+
+    def get_threads(self):
+        msg_id = self.send('getThreads')
+        reply_msg = self.receive()
+        assert reply_msg['_id'] == msg_id, "Unexpected reply to getThreads."
+        assert reply_msg['commandExecStatus'] == 'ok', "Failed to getThreads list."
+        return reply_msg
+
+    def set_debugged_thread(self, ident):
+        msg_id = self.send('setDebuggedThread',
+                           ident=ident)
+        reply_msg = self.receive()
+        assert reply_msg['_id'] == msg_id, "Unexpected reply to setDebuggedThread."
+        #assert reply_msg['commandExecStatus'] == 'ok', "setDebuggedThread failed "\
+        #                                               "with error: '%s'." % (reply_msg['error_messages'][0]
+        return reply_msg
+

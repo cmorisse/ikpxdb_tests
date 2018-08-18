@@ -56,7 +56,7 @@ class TestCase07MultiThreading(unittest.TestCase):
 
 
     def test_01_same_thread(self):
-        """Launch debugged program with 2 threads and 1 breakpoint, step over
+        """Launch debugged program with 2 threads and 1 breakpoint, break, resume
         10 times and check that it always breaks in the same thread."""
         time.sleep(0.5)  # allows debugger to start
         self.ikpdb.set_breakpoint(DEBUGGED_PROGRAM, line_number=42)
@@ -88,25 +88,95 @@ class TestCase07MultiThreading(unittest.TestCase):
 
     def test_02_get_threads_list(self):
         """Launch debugged program with 2 threads and 1 breakpoint, break
-        then get threads list().
+        then send getThreads command.
         """
         time.sleep(0.5)  # allows debugger to start
         self.ikpdb.set_breakpoint(DEBUGGED_PROGRAM, line_number=42)
         self.ikpdb.run_script()
 
         i_msg = self.ikpdb.receive()
-        self.assertEqual(i_msg['command'], 
+        self.assertEqual(i_msg['command'],
                          "programBreak", 
                          "Received: %s while expecting 'programBreak'" % (i_msg['command'],))
 
-        # TODO: evaluate "ikpdb.ikpdb.get_threads_list()"
-        i_msg = self.ikpdb.evaluate(i_msg['frames'][0]['id'],
-                                    "ikpdb.ikpdb.get_threads()")
-        print(i_msg)
-        # TODO: check 4 threads and Thread-1 et Threads2
+        i_msg = self.ikpdb.get_threads()
+        threads_dict = i_msg['result']
+        nb_threads = len(threads_dict)
+        self.assertEqual(nb_threads, 4, 
+                         "Unexpected number of threads (Received: %s, expecting 4)" % (nb_threads,))
+        self.assertEqual(set([threads_dict[ident]['name'] for ident in threads_dict]),
+                        set([u'Thread-2', u'IKPdbCommandLoop', u'MainThread', u'Thread-1']),
+                        "Incorrect threads list returned.")
 
+    def test_03_set_debugged_thread_none(self):
+        """Launch debugged program with 2 threads and 1 breakpoint, break
+        then call setDebuggedThread(None).
+        """
+        time.sleep(0.5)  # allows debugger to start
+        self.ikpdb.set_breakpoint(DEBUGGED_PROGRAM, line_number=42)
+        self.ikpdb.run_script()
 
-    def test_03_switch_thread(self):
+        i_msg = self.ikpdb.receive()
+        self.assertEqual(i_msg['command'],
+                         "programBreak", 
+                         "Received: %s while expecting 'programBreak'" % (i_msg['command'],))
+
+        threads_dict = self.ikpdb.get_threads()['result']
+        
+        i_msg = self.ikpdb.set_debugged_thread(None)
+        threads_dict = i_msg['result']
+        nb_threads = len(threads_dict)
+        self.assertEqual(nb_threads, 4, 
+                         "Unexpected number of threads (Received: %s, expecting 4)" % (nb_threads,))
+        self.assertEqual(set([threads_dict[ident]['name'] for ident in threads_dict]),
+                        set([u'Thread-2', u'IKPdbCommandLoop', u'MainThread', u'Thread-1']),
+                        "Incorrect threads list returned.")
+
+    def test_04_set_debugged_thread_ikpdb(self):
+        """Launch debugged program with 2 threads and 1 breakpoint, break
+        then call setDebuggedThread('IKPDBCommandLoop thread ident').
+        """
+        time.sleep(0.5)  # allows debugger to start
+        self.ikpdb.set_breakpoint(DEBUGGED_PROGRAM, line_number=42)
+        self.ikpdb.run_script()
+
+        i_msg = self.ikpdb.receive()
+        self.assertEqual(i_msg['command'],
+                         "programBreak", 
+                         "Received: %s while expecting 'programBreak'" % (i_msg['command'],))
+
+        threads_dict = self.ikpdb.get_threads()['result']
+        ikpdb_thread_ident = filter(lambda t: t['name'].startswith("IKPdbCommandLoop"), [threads_dict[ident] for ident in threads_dict])[0]['ident']
+        reply = self.ikpdb.set_debugged_thread(ikpdb_thread_ident)
+        
+        self.assertEqual(reply['commandExecStatus'], 'error', 
+                         "setDebuggedThread(IKPdbCommandLoop) should have failed.")
+        self.assertTrue(reply['error_messages'][0].startswith("Cannot debug IKPdb tracer"),
+                        "Wrong error message received for setDebuggedThread(IKPdbCommandLoop).")
+
+    def test_05_set_debugged_thread_wrong_thident(self):
+        """Launch debugged program with 2 threads and 1 breakpoint, break
+        then call setDebuggedThread(wrong thread ident).
+        """
+        time.sleep(0.5)  # allows debugger to start
+        self.ikpdb.set_breakpoint(DEBUGGED_PROGRAM, line_number=42)
+        self.ikpdb.run_script()
+
+        i_msg = self.ikpdb.receive()
+        self.assertEqual(i_msg['command'],
+                         "programBreak", 
+                         "Received: %s while expecting 'programBreak'" % (i_msg['command'],))
+
+        threads_dict = self.ikpdb.get_threads()['result']
+        wrong_thread_ident = 999999999000
+        reply = self.ikpdb.set_debugged_thread(wrong_thread_ident)
+        
+        self.assertEqual(reply['commandExecStatus'], 'error', 
+                         "setDebuggedThread(wrong_thread_ident) should have failed.")
+        self.assertTrue(reply['error_messages'][0].startswith("No thread with ident:"),
+                        "Wrong error message received for setDebuggedThread(IKPdbCommandLoop).")
+
+    def test_06_switch_thread(self):
         """Launch debugged program with 2 threads and 1 breakpoint, step over
         5 times and check that it always breaks in the same thread."""
         time.sleep(0.5)  # allows debugger to start
@@ -136,10 +206,32 @@ class TestCase07MultiThreading(unittest.TestCase):
                                  debugged_thread, debugged_thread_name,
                                  i_msg['frames'][0]['thread'], i_msg['frames'][0].get('thread_name')))
             if i==4:
-                pass
-                # TODO: switcher le thread
+                threads_dict = i_msg['threads']
+                test_threads = {td['name']:td['ident'] for td in filter(lambda t: t['name'].startswith("Thread-"), [threads_dict[ident] for ident in threads_dict])}
+                if debugged_thread_name == 'Thread-1':
+                    next_thread_ident = test_threads['Thread-2']
+                    next_thread_name = 'Thread-2'
+                else:
+                    next_thread_ident = test_threads['Thread-1']
+                    next_thread_name = 'Thread-1'
+                print("Switching to thread: %s, %s" % (next_thread_ident, next_thread_name))
+                reply = self.ikpdb.set_debugged_thread(next_thread_ident)
             self.ikpdb.resume()
 
 
-        # TODO: vérifie que l'on reste sur le thread2
+        for i in range(5):
+            i_msg = self.ikpdb.receive()
+            self.assertEqual(i_msg['command'], 
+                             "programBreak", 
+                             "Received: %s while expecting 'programBreak'" % (i_msg['command'],))
+            print("thread_ident=%s, thread_name=%s" % (i_msg['frames'][0]['thread'], 
+                                                           i_msg['frames'][0].get('thread_name'),))
+            self.assertEqual(i_msg['frames'][0]['thread'], 
+                             next_thread_ident,
+                             "Debugged thread has changed (i=%s, "
+                             "first_thread=%s:%s, last_thread=%s:%s)" % (
+                             i,
+                             debugged_thread, debugged_thread_name,
+                             i_msg['frames'][0]['thread'], i_msg['frames'][0].get('thread_name')))
+            self.ikpdb.resume()
 
